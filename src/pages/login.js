@@ -2,11 +2,18 @@ import { getProviders, signIn, useSession } from "next-auth/react";
 import React from "react";
 import { nanoid } from "nanoid";
 import Image from "next/image";
+import { useRouter } from "next/router";
 
 const LoginPage = ({ providers }) => {
   const { data, status } = useSession();
-  console.log({ data, status });
-  console.log(providers);
+  const router = useRouter();
+  // console.log({ data, status });
+  if (status === "loading") {
+    return "";
+  }
+  if (data) {
+    router.push("/");
+  }
   return (
     <div className="flex items-center justify-center h-screen">
       {Object.values(providers).map((provider) => (
