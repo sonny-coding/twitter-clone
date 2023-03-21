@@ -17,7 +17,6 @@ const useUserInfo = () => {
       });
     });
   }
-
   useEffect(() => {
     getUserInfo();
   }, [status]);
