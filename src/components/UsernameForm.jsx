@@ -18,6 +18,11 @@ const UsernameForm = () => {
   const handleFormSubmit = (e) => {
     e.preventDefault();
     console.log(username);
+    fetch("/api/users", {
+      method: "PUT",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ username, userInfo }),
+    });
   };
 
   return (

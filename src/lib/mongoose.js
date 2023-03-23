@@ -1,8 +1,34 @@
 import mongoose from "mongoose";
 
+const { MONGODB_URI } = process.env;
+
+if (!MONGODB_URI) {
+  throw new Error("No connection string availabel on environment variable");
+}
+
+let cached = global.mongoose;
+
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
+}
+
 export async function initMongoose() {
-  if (mongoose.connection.readyState === 1) {
-    return mongoose.connection.asPromise();
+  if (cached.conn) {
+    return cached.conn;
   }
-  await mongoose.connect(process.env.MONGODB_URI);
+
+  if (!cached.promise) {
+    const opts = {
+      bufferCommands: false,
+    };
+
+    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
+      console.log("Connected to MongoDB");
+
+      return mongoose;
+    });
+  }
+
+  cached.conn = await cached.promise;
+  return cached.conn;
 }
